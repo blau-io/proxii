@@ -9,11 +9,11 @@ build:
 
         - script:
             name: go build
-            code: go build ./...
+            code: go build
 
         - script:
             name: go test
-            code: go test ./..
+            code: go test
 
 deploy:
     steps:
@@ -29,4 +29,26 @@ deploy:
             content: $SSH_PRIVATE
             overwrite: true
             hide-from-log: true
+
+        - script:
+            name: install goaci
+            code: go get github.com/appc/goaci
+
+        - script:
+            name: create ACI
+            code: goaci go github.com/blau-io/proxii
+
+        - create-file:
+            name: create service file
+            filename: proxii.service
+            content: $SERVICE
+            hide-from-log: true
+
+        - script:
+            name: transfer files
+            code: scp -i $PRIVATEKEY_PATH proxii.service proxii.aci core@blau.io:~/
+
+        - script:
+            name: start new version
+            code: ssh -i $PRIVATEKEY_PATH core@blay.io fleetctl start proxii.service
 
