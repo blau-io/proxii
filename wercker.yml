@@ -6,6 +6,10 @@ build:
             code: go get github.com/constabulary/gb/...
 
         - script:
+            name: get dependencies
+            code: gb vendor restore
+
+        - script:
             name: build
             code: gb build
 
