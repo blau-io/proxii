@@ -6,11 +6,9 @@ This project is heavily inspired by [Vulcand](https://vulcand.io/) and [Gogeta](
 **This project is still in heavy development**
 
 ###Roadmap:
- - Support encrypted etcd nodes
  - Add unit tests
  - Add documentation
  - Support TLS
  - Support HTTP2
  - allow for more configuration
-
 
