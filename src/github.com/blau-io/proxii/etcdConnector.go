@@ -1,9 +1,14 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net"
+	"net/http"
 	"net/url"
 	"path"
 	"time"
@@ -19,9 +24,40 @@ type etcdConnector struct {
 }
 
 func newEtcdConnector(c *Config) (*etcdConnector, error) {
+	var transport client.CancelableTransport
+	if c.etcdCertFile == "" && c.etcdKeyFile == "" {
+		transport = client.DefaultTransport
+	} else {
+		tlsCert, err := tls.LoadX509KeyPair(c.etcdCertFile, c.etcdKeyFile)
+		if err != nil {
+			return nil, err
+		}
+
+		certBytes, err := ioutil.ReadFile(c.etcdCaFile)
+		if err != nil {
+			return nil, err
+		}
+
+		caCertPool := x509.NewCertPool()
+		caCertPool.AppendCertsFromPEM(certBytes)
+
+		transport = &http.Transport{
+			Proxy: http.ProxyFromEnvironment,
+			Dial: (&net.Dialer{
+				Timeout:   30 * time.Second,
+				KeepAlive: 30 * time.Second,
+			}).Dial,
+			TLSClientConfig: &tls.Config{
+				Certificates: []tls.Certificate{tlsCert},
+				RootCAs:      caCertPool,
+			},
+			TLSHandshakeTimeout: 10 * time.Second,
+		}
+	}
+
 	etcdClient, err := client.New(client.Config{
 		Endpoints:               []string{c.etcdAddress},
-		Transport:               client.DefaultTransport,
+		Transport:               transport,
 		HeaderTimeoutPerRequest: time.Second,
 	})
 
