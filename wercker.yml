@@ -38,6 +38,10 @@ deploy:
             name: create ACI
             code: goaci go github.com/blau-io/proxii
 
+        - script:
+            name: patch ACI
+            code: actool patch-manifest --replace -mounts=certs,path=/certs,readOnly=true proxii.aci
+
         - create-file:
             name: create service file
             filename: proxii.service
