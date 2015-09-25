@@ -17,6 +17,9 @@ build:
 
 deploy:
     steps:
+        - install-packages:
+            packages: file
+
         - script:
             name: install goaci
             code: go get github.com/appc/goaci
