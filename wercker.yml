@@ -17,8 +17,25 @@ build:
 
 deploy:
     steps:
-        - add-to-known_hosts:
-            hostname: blau.io
+        - mktemp:
+            envvar: ACTOOL_PATH
+
+        - script:
+            name: install dependencies
+            code: |
+                go get github.com/appc/goaci
+                wget https://github.com/appc/spec/releases/download/v0.7.0/appc-v0.7.0.tar.gz
+                tar -xvf appc-v0.7.0.tar.gz -C $ACTOOL_PATH
+
+        - script:
+            name: create ACI
+            code: goaci go github.com/blau-io/proxii
+
+        - script:
+            name: patch ACI
+            code: |
+                cd $ACTOOL_PATH
+                ./actool patch-manifest --replace -mounts=certs,path=/certs,readOnly=true proxii.aci
 
         - mktemp:
             envvar: PRIVATEKEY_PATH
@@ -30,23 +47,14 @@ deploy:
             overwrite: true
             hide-from-log: true
 
-        - script:
-            name: install goaci
-            code: go get github.com/appc/goaci
-
-        - script:
-            name: create ACI
-            code: goaci go github.com/blau-io/proxii
-
-        - script:
-            name: patch ACI
-            code: actool patch-manifest --replace -mounts=certs,path=/certs,readOnly=true proxii.aci
-
         - create-file:
             name: create service file
             filename: proxii.service
             content: $SERVICE
             hide-from-log: true
+
+        - add-to-known_hosts:
+            hostname: blau.io
 
         - script:
             name: transfer files
