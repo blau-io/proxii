@@ -50,5 +50,5 @@ deploy:
 
         - script:
             name: start new version
-            code: ssh -i $PRIVATEKEY_PATH core@blay.io fleetctl start proxii.service
+            code: ssh -i $PRIVATEKEY_PATH core@blau.io fleetctl start proxii.service
 
