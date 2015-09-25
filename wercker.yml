@@ -19,6 +19,7 @@ deploy:
     steps:
         - mktemp:
             envvar: ACTOOL_PATH
+            directory: true
 
         - script:
             name: install dependencies
