@@ -46,6 +46,10 @@ deploy:
             token: $GITHUB_TOKEN
             tag: v0.0.1
 
+        - github-upload-asset:
+            token: $GITHUB_TOKEN
+            file: proxii.aci
+
         - add-to-known_hosts:
             hostname: blau.io
 
