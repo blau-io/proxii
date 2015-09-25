@@ -34,8 +34,7 @@ deploy:
                 wget https://github.com/appc/spec/releases/download/v0.7.0/appc-v0.7.0.tar.gz
                 tar -xvf appc-v0.7.0.tar.gz
                 ./appc-v0.7.0/actool patch-manifest --replace \
-                    -mounts=certs,path=/certs,readOnly=true \
-                    -mounts=resolv-conf,path=/etc/resolv.conf,readOnly=true \
+                    -mounts=certs,path=/certs,readOnly=true:resolv-conf,path=/etc/resolv.conf,readOnly=true \
                     proxii.aci
 
         - github-create-release:
