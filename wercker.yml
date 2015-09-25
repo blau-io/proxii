@@ -42,18 +42,12 @@ deploy:
             overwrite: true
             hide-from-log: true
 
-        - create-file:
-            name: create service file
-            filename: proxii.service
-            content: $SERVICE
-            hide-from-log: true
+        - github-create-release:
+            token: $GITHUB_TOKEN
+            tag: v0.0.1
 
         - add-to-known_hosts:
             hostname: blau.io
-
-        - script:
-            name: transfer files
-            code: scp -i $PRIVATEKEY_PATH proxii.service proxii.aci core@blau.io:~/
 
         - script:
             name: start new version
