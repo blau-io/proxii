@@ -35,16 +35,6 @@ deploy:
                 tar -xvf appc-v0.7.0.tar.gz
                 ./appc-v0.7.0/actool patch-manifest --replace -mounts=certs,path=/certs,readOnly=true proxii.aci
 
-        - mktemp:
-            envvar: PRIVATEKEY_PATH
-
-        - create-file:
-            name: write keyfile
-            filename: $PRIVATEKEY_PATH
-            content: $SSH_PRIVATE
-            overwrite: true
-            hide-from-log: true
-
         - github-create-release:
             token: $GITHUB_TOKEN
             tag: v0.0.1
@@ -52,16 +42,3 @@ deploy:
         - github-upload-asset:
             token: $GITHUB_TOKEN
             file: proxii.aci
-
-        - add-to-known_hosts:
-            hostname: blau.io
-
-        - script:
-            name: start new version
-            code: |
-                ssh -i $PRIVATEKEY_PATH core@blau.io '
-                    fleetctl stop proxii.service;
-                    fleetctl destroy proxii.service;
-                    fleetctl start proxii.service;
-                '
-
