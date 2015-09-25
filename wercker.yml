@@ -49,6 +49,10 @@ deploy:
             code: scp -i $PRIVATEKEY_PATH proxii.service proxii.aci core@blau.io:~/
 
         - script:
+            name: stop old version
+            code: ssh -i $PRIVATEKEY_PATH core@blau.io fleetctl stop proxii.service
+
+        - script:
             name: start new version
             code: ssh -i $PRIVATEKEY_PATH core@blau.io fleetctl start proxii.service
 
