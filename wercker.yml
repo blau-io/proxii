@@ -18,11 +18,8 @@ build:
 deploy:
     steps:
         - script:
-            name: install dependencies
-            code: |
-                go get github.com/appc/goaci
-                wget https://github.com/appc/spec/releases/download/v0.7.0/appc-v0.7.0.tar.gz
-                tar -xvf appc-v0.7.0.tar.gz
+            name: install goaci
+            code: go get github.com/appc/goaci
 
         - script:
             name: create ACI
@@ -30,7 +27,10 @@ deploy:
 
         - script:
             name: patch ACI
-            code: ./actool patch-manifest --replace -mounts=certs,path=/certs,readOnly=true proxii.aci
+            code: |
+                wget https://github.com/appc/spec/releases/download/v0.7.0/appc-v0.7.0.tar.gz
+                tar -xvf appc-v0.7.0.tar.gz
+                ./appc-v0.7.0/actool patch-manifest --replace -mounts=certs,path=/certs,readOnly=true proxii.aci
 
         - mktemp:
             envvar: PRIVATEKEY_PATH
