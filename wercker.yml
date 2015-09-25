@@ -51,7 +51,9 @@ deploy:
         - script:
             name: start new version
             code: |
-                ssh -i $PRIVATEKEY_PATH core@blau.io fleetctl stop proxii.service && \
-                fleetctl destroy proxii.service && \
-                fleetctl start proxii.service
+                ssh -i $PRIVATEKEY_PATH core@blau.io <<
+                    fleetctl stop proxii.service
+                    fleetctl destroy proxii.service
+                    fleetctl start proxii.service
+                EOF
 
