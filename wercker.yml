@@ -39,7 +39,7 @@ deploy:
 
         - github-create-release:
             token: $GITHUB_TOKEN
-            tag: v0.0.1
+            tag: v0.0.2
 
         - github-upload-asset:
             token: $GITHUB_TOKEN
