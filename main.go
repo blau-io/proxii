@@ -22,8 +22,14 @@ func (p *proxii) handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	proxy := newReverseProxy(uri)
-	proxy.ServeHTTP(w, r)
+	// Dirty workaround for the moment
+	if strings.Contains(uri.Host, "127.0.0.1") {
+		proxy := httputil.NewSingleHostReverseProxy(uri)
+		proxy.ServeHTTP(w, r)
+	} else {
+		proxy := newReverseProxy(uri)
+		proxy.ServeHTTP(w, r)
+	}
 }
 
 func main() {
